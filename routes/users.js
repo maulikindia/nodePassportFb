@@ -38,4 +38,16 @@ router.get('/d', async (req, res) => {
 
 });
 
+
+//this endpoint will displays the twitter login page
+router.get('/auth/twitter', passport.authenticate('twitter'));
+
+// handle the callback after facebook has authenticated the user
+router.get('/auth/twitter/callback', passport.authenticate('twitter', {
+  successRedirect: '/profile',
+  failureRedirect: '/auth/twitter'
+}));
+
+
+
 module.exports = router;

@@ -36,7 +36,7 @@ app.use('/', usersRouter);
 
 
 //import passport configured strategy.
-let re = require('./config/passport')
+let re = require('./config/passportFb')
 
 
 // catch 404 and forward to error handler

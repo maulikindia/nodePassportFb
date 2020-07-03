@@ -1,16 +1,20 @@
 let passport = require('passport');
-let fbStrategy = require('passport-facebook').Strategy;
+let twitterStrategy = require('passport-twitter').Strategy;
 let user = require('../models/user');
 
 
 //serialize the user
 passport.serializeUser(function (user, done) {
     done(null, user);
+    // done(null, user.id)
 });
 
 //deserialize the user
 passport.deserializeUser(function (obj, done) {
     done(null, obj);
+    // user.findById(obj, async (err, user) => {
+    //     done(err, user);
+    // });
 });
 
 
@@ -18,15 +22,14 @@ passport.deserializeUser(function (obj, done) {
 
 
 
-// async function passportAuth() {
-passport.use(new fbStrategy(
+passport.use(new twitterStrategy(
     {
-        clientID: 'your app id from fb developer account',
-        clientSecret: 'your app secret from fb developer account',
-        callbackURL: 'http://localhost:3000/auth/facebook/callback',  //same URL as set on website URL on fb developer account.
-        profileFields: ['displayName', 'name', 'id', 'emails']
+        consumerKey: 'ecvwpNmqFbQMJ2kFwqURYW7XV',
+        consumerSecret: 'WHTbMLEmG96MoZcYKvL1Lknm8VpU7nEzAN6tizLWZtUgvweiXK',
+        callbackURL: 'http://localhost:3000/auth/twitter/callback',  //same URL as set on callback URL on Twitter developer account.
+
     }, function (accessToken, refreshToken, profile, done) {
-        user.findOne({ fbId: profile.id }, async (err, data) => {
+        user.findOne({ ' twitter.twitterId': profile.id }, async (err, data) => {
 
             if (err) {
                 return done(err);
@@ -37,12 +40,10 @@ passport.use(new fbStrategy(
 
             else if (data === null) {
                 let userObj = {};
-                userObj.fbName = profile.displayName;
-                userObj.token = accessToken;
-                userObj.fbId = profile.id;
-
+                userObj.twitter.userName = profile.displayName;
+                userObj.twitter.token = accessToken;
+                userObj.twitter.userId = profile.id;
                 await user.create(userObj, async (err, respo) => {
-
                     if (err) {
                         return err;
                     }
@@ -55,9 +56,7 @@ passport.use(new fbStrategy(
             }
         });
     }));
-// };
 
 
 
-// module.exports = { passportAuth };
 module.exports = passport;

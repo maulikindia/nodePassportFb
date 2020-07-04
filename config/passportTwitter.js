@@ -24,13 +24,12 @@ passport.deserializeUser(function (obj, done) {
 
 passport.use(new twitterStrategy(
     {
-        consumerKey: 'ecvwpNmqFbQMJ2kFwqURYW7XV',
-        consumerSecret: 'WHTbMLEmG96MoZcYKvL1Lknm8VpU7nEzAN6tizLWZtUgvweiXK',
+        consumerKey: 'replace API key from twitter dev account',
+        consumerSecret: 'replace API Secret from twitter dev account',
         callbackURL: 'http://localhost:3000/auth/twitter/callback',  //same URL as set on callback URL on Twitter developer account.
 
     }, function (accessToken, refreshToken, profile, done) {
         user.findOne({ ' twitter.twitterId': profile.id }, async (err, data) => {
-
             if (err) {
                 return done(err);
             }
@@ -40,9 +39,12 @@ passport.use(new twitterStrategy(
 
             else if (data === null) {
                 let userObj = {};
-                userObj.twitter.userName = profile.displayName;
-                userObj.twitter.token = accessToken;
-                userObj.twitter.userId = profile.id;
+                let twitter = {};
+                twitter.userName = profile.displayName;
+                twitter.token = accessToken;
+                twitter.userId = profile.id;
+
+                userObj.twitter = twitter;
                 await user.create(userObj, async (err, respo) => {
                     if (err) {
                         return err;

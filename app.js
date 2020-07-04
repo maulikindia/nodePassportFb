@@ -4,8 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var passport = require('passport');
+var session = require('express-session');
 
-var indexRouter = require('./routes/index');
+var authRouter = require('./routes/auth');
 var usersRouter = require('./routes/users');
 
 var app = express();
@@ -27,17 +28,28 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: 'mysecret@123'
+}));
+
 
 //initialize the passport
 app.use(passport.initialize());
+app.use(passport.session());
 
-// app.use('/', indexRouter);
-app.use('/', usersRouter);
+app.use('/', authRouter);
+app.use('/user', usersRouter);
 
 
 //import passport configured strategy.
-let re = require('./config/passportFb')
+let fbImport = require('./config/passportFb')
 
+
+
+//import passport configured strategy.
+let passportImport = require('./config/passportTwitter')
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
